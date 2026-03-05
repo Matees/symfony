@@ -3,8 +3,17 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - "5432"
+      - "5432:5432"
 ###< doctrine/doctrine-bundle ###
+
+  rabbitmq:
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  elasticsearch:
+    ports:
+      - "9200:9200"
 
 ###> symfony/mailer ###
   mailer:

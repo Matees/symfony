@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+<div style="max-width: 800px; margin: 2rem auto; font-family: sans-serif;">
+    <h1>Products</h1>
+
+    <form method="get" action="{{ path('product_index') }}" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search products..." style="flex: 1; padding: 0.5rem; font-size: 1rem;">
+        <button type="submit" style="padding: 0.5rem 1rem;">Search</button>
+        {% if query %}
+            <a href="{{ path('product_index') }}" style="padding: 0.5rem 1rem; text-decoration: none; background: #eee; border-radius: 4px;">Clear</a>
+        {% endif %}
+    </form>
+
+    {% for message in app.flashes('success') %}
+        <div style="background: #d4edda; color: #155724; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem;">{{ message }}</div>
+    {% endfor %}
+
+    {% if searchError %}
+        <div style="background: #f8d7da; color: #721c24; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem;">
+            Elasticsearch error: {{ searchError }}
+        </div>
+    {% endif %}
+
+    <a href="{{ path('product_new') }}" style="display: inline-block; margin-bottom: 1.5rem; padding: 0.5rem 1rem; background: #007bff; color: #fff; text-decoration: none; border-radius: 4px;">+ New Product</a>
+
+    {% if query %}
+        <h2>Search results for "{{ query }}"</h2>
+        {% if results is empty %}
+            <p>No results found.</p>
+        {% else %}
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f0f0f0;">
+                        <th style="padding: 0.5rem; text-align: left; border: 1px solid #ddd;">Name</th>
+                        <th style="padding: 0.5rem; text-align: left; border: 1px solid #ddd;">Description</th>
+                        <th style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in results %}
+                        <tr>
+                            <td style="padding: 0.5rem; border: 1px solid #ddd;">{{ item.name }}</td>
+                            <td style="padding: 0.5rem; border: 1px solid #ddd;">{{ item.description ?? '-' }}</td>
+                            <td style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">{{ item.price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        <h2>All Products</h2>
+        {% if allProducts is empty %}
+            <p>No products yet. <a href="{{ path('product_new') }}">Add one!</a></p>
+        {% else %}
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f0f0f0;">
+                        <th style="padding: 0.5rem; text-align: left; border: 1px solid #ddd;">Name</th>
+                        <th style="padding: 0.5rem; text-align: left; border: 1px solid #ddd;">Description</th>
+                        <th style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">Price</th>
+                        <th style="padding: 0.5rem; text-align: left; border: 1px solid #ddd;">Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in allProducts %}
+                        <tr>
+                            <td style="padding: 0.5rem; border: 1px solid #ddd;">{{ product.name }}</td>
+                            <td style="padding: 0.5rem; border: 1px solid #ddd;">{{ product.description ?? '-' }}</td>
+                            <td style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">{{ product.price }}</td>
+                            <td style="padding: 0.5rem; border: 1px solid #ddd;">{{ product.createdAt|date('Y-m-d H:i') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
